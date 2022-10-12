@@ -9,7 +9,9 @@ class SessionsController < ApplicationController
         if user && user.authenticate(params[:password]) 
             # put user id in session
             session[:user_id] = user.id
-            redirect_to user, notice: "Welcome back, #{user.name}" 
+            redirect_to (session[:intended_url] || user), 
+                notice: "Welcome back, #{user.name}"
+            session[:intended_url] = nil 
         else
             flash.now[:alert] = "Invalid email/password combination!"
             render :new, status: :unprocessable_entity
@@ -20,6 +22,6 @@ class SessionsController < ApplicationController
     def destroy
         session[:user_id] = nil
         redirect_to events_url, status: :see_other,
-        notice: "You're now signed out!"
+        notice: "You're now signed in!"
     end
 end
