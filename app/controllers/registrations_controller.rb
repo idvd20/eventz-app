@@ -1,5 +1,5 @@
 class RegistrationsController < ApplicationController
-
+    before_action :require_signin
     before_action :set_event
 
     def index
@@ -12,6 +12,7 @@ class RegistrationsController < ApplicationController
 
     def create
         @registration = @event.registrations.new(registrations_params)
+        @registration.user = current_user
 
         if @event.save
             redirect_to event_registrations_url(@event), notice: "Thanks for registering!"
@@ -23,7 +24,7 @@ class RegistrationsController < ApplicationController
     private
 
         def registrations_params
-            params.require(:registration).permit(:name, :email, :how_heard)
+            params.require(:registration).permit(:how_heard)
         end
 
         def set_event
