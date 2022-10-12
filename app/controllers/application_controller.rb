@@ -12,5 +12,5 @@ class ApplicationController < ActionController::Base
                 redirect_to new_session_url, alert: "Please sign in first!"
             end
         end
-
+ 
 end
