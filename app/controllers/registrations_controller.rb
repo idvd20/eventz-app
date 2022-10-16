@@ -2,6 +2,7 @@ class RegistrationsController < ApplicationController
     before_action :require_signin
     before_action :set_event
 
+
     def index
         @registrations = @event.registrations
     end
@@ -28,6 +29,6 @@ class RegistrationsController < ApplicationController
         end
 
         def set_event
-            @event = Event.find(params[:event_id])
+            @event = Event.find_by!(slug: params[:event_id])
         end
 end
