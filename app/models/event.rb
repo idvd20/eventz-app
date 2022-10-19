@@ -16,6 +16,7 @@ class Event < ApplicationRecord
     validates :price, numericality: { greater_than_or_equal_to: 0}
     validates :capacity, numericality:
         {ony_integer: true, greate_than: 0}
+    validate :acceptable_image
 
     scope :past, -> { where("starts_at < ?", Time.now).order("starts_at") }
     scope :upcoming, -> { where("starts_at > ?", Time.now).order("starts_at") }
@@ -38,5 +39,18 @@ class Event < ApplicationRecord
 
         def set_slug
             self.slug = name.parameterize 
+        end
+
+        def acceptable_image
+            return unless main_image.attached?
+
+            unless main_image.blob.byte_size <= 1.megabyte
+                errors.add(:main_image, "is too big")
+            end
+
+            acceptable_types = ["image/jpeg", "image/png"]
+            unless acceptable_types.include?(main_image.content_type)
+                errors.add(:main_image, "must be a JPEG or PNG")
+            end
         end
 end
